@@ -36,7 +36,6 @@
 #include "commands.h"
 #include "utils.h"
 #include "btrfs-list.h"
-#include "utils.h"
 
 static int is_subvolume_cleaned(int fd, u64 subvolid)
 {
@@ -221,16 +220,6 @@ out:
 	free(dupdir);
 
 	return retval;
-}
-
-static int wait_for_commit(int fd)
-{
-	int ret;
-
-	ret = ioctl(fd, BTRFS_IOC_START_SYNC, NULL);
-	if (ret < 0)
-		return ret;
-	return ioctl(fd, BTRFS_IOC_WAIT_SYNC, NULL);
 }
 
 static const char * const cmd_subvol_delete_usage[] = {

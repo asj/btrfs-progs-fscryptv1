@@ -1913,3 +1913,13 @@ int btrfs_list_get_path_rootid(int fd, u64 *treeid)
 
 	return ret;
 }
+
+int wait_for_commit(int fd)
+{
+	int ret;
+
+	ret = ioctl(fd, BTRFS_IOC_START_SYNC, NULL);
+	if (ret < 0)
+		return ret;
+	return ioctl(fd, BTRFS_IOC_WAIT_SYNC, NULL);
+}
