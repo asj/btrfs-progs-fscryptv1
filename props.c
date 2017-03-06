@@ -25,6 +25,7 @@
 #include "commands.h"
 #include "utils.h"
 #include "props.h"
+#include "encrypt.h"
 
 #define XATTR_BTRFS_PREFIX     "btrfs."
 #define XATTR_BTRFS_PREFIX_LEN (sizeof(XATTR_BTRFS_PREFIX) - 1)
@@ -190,5 +191,7 @@ const struct prop_handler prop_handlers[] = {
 	 prop_object_dev | prop_object_root, prop_label},
 	{"compression", "Set/get compression for a file or directory", 0,
 	 prop_object_inode, prop_compression},
+	{"encrypt", "set/get encrypt property value", 0,
+	prop_object_subvol, prop_encrypt},
 	{NULL, NULL, 0, 0, NULL}
 };
