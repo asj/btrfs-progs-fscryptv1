@@ -1923,3 +1923,22 @@ int wait_for_commit(int fd)
 		return ret;
 	return ioctl(fd, BTRFS_IOC_WAIT_SYNC, NULL);
 }
+
+int wait_for_commit_subvol(char *subvol)
+{
+	int fd;
+	int ret;
+	DIR *ds;
+
+	fd = open_file_or_dir3(subvol, &ds, O_RDWR);
+	if (fd == -1) {
+		ret = -errno;
+		fprintf(stderr, "ERROR: open '%s' failed: %s\n",
+					subvol, strerror(-ret));
+		return ret;
+	}
+
+	ret = wait_for_commit(fd);
+	close_file_or_dir(fd, ds);
+	return ret;
+}

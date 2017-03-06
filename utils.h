@@ -230,6 +230,7 @@ int test_isdir(const char *path);
 const char *subvol_strip_mountpoint(const char *mnt, const char *full_path);
 int get_subvol_info(const char *fullpath, struct root_info *get_ri);
 int wait_for_commit(int fd);
+int wait_for_commit_subvol(char *subvol);
 
 /*
  * Btrfs minimum size calculation is complicated, it should include at least:
