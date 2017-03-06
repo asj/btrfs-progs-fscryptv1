@@ -3688,8 +3688,10 @@ int find_mount_root(const char *path, char **mount_root)
 	char *longest_match = NULL;
 
 	fd = open(path, O_RDONLY | O_NOATIME);
-	if (fd < 0)
+	if (fd < 0) {
+		error("open failed: %s", path);
 		return -errno;
+	}
 	close(fd);
 
 	mnttab = setmntent("/proc/self/mounts", "r");
@@ -4182,16 +4184,20 @@ int get_subvol_info(const char *fullpath, struct root_info *get_ri)
 	DIR *dirstream2 = NULL;
 
 	ret = test_issubvolume(fullpath);
-	if (ret < 0)
+	if (ret < 0) {
+		error("test_ifsubvol failed");
 		return ret;
+	}
 	if (!ret) {
 		error("not a subvolume: %s", fullpath);
 		return 1;
 	}
 
 	ret = find_mount_root(fullpath, &mnt);
-	if (ret < 0)
+	if (ret < 0) {
+		error("Can't find mount root");
 		return ret;
+	}
 	if (ret > 0) {
 		error("%s doesn't belong to btrfs mount point", fullpath);
 		return 1;
@@ -4200,16 +4206,22 @@ int get_subvol_info(const char *fullpath, struct root_info *get_ri)
 	svpath = subvol_strip_mountpoint(mnt, fullpath);
 
 	fd = btrfs_open_dir(fullpath, &dirstream1, 1);
-	if (fd < 0)
+	if (fd < 0) {
+		error("open dir failed");
 		goto out;
+	}
 
 	ret = btrfs_list_get_path_rootid(fd, &sv_id);
-	if (ret)
+	if (ret) {
+		error("get path rootid failed");
 		goto out;
+	}
 
 	mntfd = btrfs_open_dir(mnt, &dirstream2, 1);
-	if (mntfd < 0)
+	if (mntfd < 0) {
+		error("open dir failed");
 		goto out;
+	}
 
 	memset(get_ri, 0, sizeof(*get_ri));
 	get_ri->root_id = sv_id;
